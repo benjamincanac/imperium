@@ -35,5 +35,9 @@ imperium.role('user').can([
 ])
 
 // Define admin permissions
-imperium.role('admin').isParentOf('user', { user: '*' }) // '*' means all
+imperium.role('admin').is('user', { user: '*' })
+// '*' means all, so admin will be able to manage and see all users
+
+// Use imperium.check(...) to secure the route
+app.put('/users/:id', imperium.check([{ action: 'manageUser', user: ':id' }]), updateUser)
 ```
