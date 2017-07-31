@@ -41,3 +41,7 @@ imperium.role('admin').is('user', { user: '*' })
 // Use imperium.check(...) to secure the route
 app.put('/users/:id', imperium.check([{ action: 'manageUser', user: ':id' }]), updateUser)
 ```
+
+## API
+
+### Imperium(options)
