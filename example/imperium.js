@@ -5,17 +5,17 @@ const db = require('./db');
 module.exports = Imperium({
   // MongoDB Example
 
-  // async getPositions(req) {
+  // async getUserAcl(req) {
   //   const users = mongo.db.collection('users')
 
-  //   const user = await users.findOne({ _id: mongo.oid(req.session.userId) }, { positions: 1 })
+  //   const user = await users.findOne({ _id: mongo.oid(req.session.userId) }, { acl: 1 })
 
   //   if (!user) throw new Error('user-not-found')
 
-  //   return user.positions
+  //   return user.acl
   // }
 
-  async getPositions(req) {
-    return db.users[0].positions;
+  async getUserAcl(req) {
+    return db.users[1].acl;
   }
 })

@@ -12,7 +12,7 @@ const shops = [
 const users = [
   {
     _id: '1',
-    positions: [
+    acl: [
       {
         role: 'admin'
       }
@@ -20,16 +20,17 @@ const users = [
   },
   {
     _id: '2',
-    positions: [
+    acl: [
       {
         role: 'user',
-        user: '2'
+        user: '2',
+        bucket: 'front'
       }
     ]
   },
   {
     _id: '3',
-    positions: [
+    acl: [
       {
         role: 'user',
         user: '3'
@@ -42,7 +43,7 @@ const users = [
   },
   {
     _id: '4',
-    positions: [
+    acl: [
       {
         role: 'user',
         user: '4'
@@ -55,7 +56,7 @@ const users = [
   },
   {
     _id: '5',
-    positions: [
+    acl: [
       {
         role: 'user',
         user: '5'
