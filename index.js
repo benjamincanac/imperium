@@ -2,33 +2,33 @@ const _ = require('lodash')
 const assert = require('assert')
 
 class ImperiumRole {
-  constructor(imperium, rname) {
+  constructor(imperium, roleName) {
     this.imperium = imperium
-    this.rname = rname
-    this.role = this.imperium.roles[this.rname]
+    this.roleName = roleName
+    this.role = this.imperium.roles[this.roleName]
 
-    assert(this.role, `Role ${this.rname} does not exist`)
+    assert(this.role, `Role ${this.roleName} does not exist`)
   }
 
   can(perms) {
-    // perms.forEach((perm) => {
-    //   const aname = perm.action
+    // check if actions are valid
+    perms.forEach((perm) => {
+      const actionName = perm.action
 
-    //   assert(this.imperium.actions[aname], `Action ${aname} does not exist`)
-    // })
+      assert(this.imperium.actions[actionName], `Action ${actionName} does not exist`)
 
-    // role.perms.push({ role })
+      this.role.perms.push(perm)
+    })
 
     return this
   }
 
-  is(rpname) {
-    // const role = this.roles[this.rname]
-    // const roleParent = this.roles[rpname]
+  isParentOf(childRoleName, childRolePerm) {
+    const child = this.imperium.roles[childRoleName]
 
-    // assert(roleParent, `Role ${rpname} does not exist`)
+    assert(child, `Role ${childRoleName} does not exist`)
 
-    // a.is.push({ spec: rspec, gen: rgen })
+    this.role.children.push({ role: childRoleName, perm: childRolePerm })
 
     return this
   }
@@ -38,29 +38,52 @@ class Imperium {
   constructor(options) {
     this.roles = []
     this.actions = []
-    this.getPositions = options.getPositions
+    this.getUserAcl = options.getUserAcl
     this.context = options.context || ['params', 'query', 'headers', 'body', 'session']
 
-    assert(typeof this.getPositions === 'function', `getPositions must be defined`)
+    assert(typeof this.getUserAcl === 'function', `getUserAcl must be defined`)
   }
 
-  addRoles(rnames) {
-    rnames.forEach((rname) => {
-      assert(!this.roles[rname], `Role ${rname} already exists`)
+  addRoles(roleNames) {
+    roleNames.forEach((roleName) => {
+      assert(!this.roles[roleName], `Role ${roleName} already exists`)
 
-      this.roles[rname] = { is: [], perms: [] }
+      this.roles[roleName] = { children: [], perms: [] }
     })
   }
 
-  addActions(anames) {
-    anames.forEach((aname) => {
-      assert(!this.actions[aname], `Action ${aname} already exists`)
+  addActions(actionNames) {
+    actionNames.forEach((actionName) => {
+      assert(!this.actions[actionName], `Action ${actionName} already exists`)
 
-      this.actions[aname] = true
+      this.actions[actionName] = true
     })
   }
 
-  evaluate(req, expr, context) {
+  evaluateUserPerm(perm, context) {
+    _.forIn(perm, (value, key) => {
+      if (value === '@') perm[key] = context[key]
+      else if (value[0] === '@') perm[key] = context[value.substr(1)]
+    });
+
+    return perm;
+  }
+
+  evaluateUserPerms(userAcl) {
+    const evaluatedPerms = []
+
+    userAcl.forEach((acl) => {
+      const perms = this.roles[acl.role].perms
+
+      perms.forEach((perm) => {
+        evaluatedPerms.push(this.evaluateUserPerm(perm, acl))
+      })
+    })
+
+    return evaluatedPerms
+  }
+
+  evaluateRoutePerm(req, expr, context) {
     if (!(typeof expr === 'string' && expr[0] === ':')) return expr
 
     const exprKey = expr.substr(1)
@@ -74,29 +97,62 @@ class Imperium {
     return null
   }
 
-  evaluatePerm(req, perm, context) {
-    return _.chain(perm)
-      .mapValues((expr) => this.evaluate(req, expr, context))
-      .omit('when')
-      .value()
+  evaluateRoutePerms(req, perms, context) {
+    return (perms || [])
+      .filter((perm) => !perm.when || perm.when(req))
+      .map((perm) => {
+        return _.chain(perm)
+          .mapValues((expr) => this.evaluateRoutePerm(req, expr, context))
+          .omit('when')
+          .value()
+      })
+  }
+
+  // TODO
+  getUserAclChildren(userAcl) {
+    return userAcl
+  }
+
+  matchPerm(routePerm, userPerm) {
+    for (const perm in routePerm) {
+      const userPermValue = userPerm[perm]
+      const routePermValue = routePerm[perm]
+
+      if (userPermValue) {
+        if (userPermValue === 'object' && userPermValue.indexOf(routePermValue) === -1) return false;
+        else if (userPermValue !== routePermValue) return false;
+      }
+    }
+
+    return true;
+  }
+
+  // check if user has every perm required by the route
+  checkPerms(routePerms, userPerms) {
+    return _.every(routePerms, (routePerm) => {
+      return _.some(userPerms, (userPerm) => {
+        return this.matchPerm(routePerm, userPerm)
+      })
+    })
   }
 
   check(perms, context) {
     context = context || this.context
 
     return async (req, res, next) => {
-      const userPositions = await this.getPositions(req)
+      const userAcl = await this.getUserAcl(req)
+      const userAclChildren = this.getUserAclChildren(userAcl)
+      const userPerms = this.evaluateUserPerms(userAclChildren)
+      const routePerms = this.evaluateRoutePerms(req, perms, context)
 
-      const evaluatedRoutePerms = (perms || [])
-        .filter((perm) => !perm.when || perm.when(req))
-        .map((perm) => this.evaluatePerm(req, perm, context))
+      if (!this.checkPerms(routePerms, userPerms)) return next(new Error('invalid-perms'));
 
       return next()
     }
   }
 
-  role(rname) {
-    return new ImperiumRole(this, rname)
+  role(roleName) {
+    return new ImperiumRole(this, roleName)
   }
 }
 
