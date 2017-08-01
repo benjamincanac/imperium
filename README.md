@@ -2,6 +2,10 @@
 
 > Imperium is a node.js module to control your user's authorizations (ACL).
 
+## Warning
+
+:warning: Imperium is actually in heavy development and will be available soon :rocket:
+
 ## Installation
 
 ```
@@ -47,5 +51,9 @@ app.put('/users/:id', imperium.check([{ action: 'manageUser', user: ':id' }]), u
 ### Imperium(options)
 
 ## Credits
+
+This project has been possible thanks to [Neo9](https://github.com/neo9).
+
+Inspired by the work of [Matthieu Oviedo](https://github.com/ovmjm).
 
 Logo made by [Romane Forgue](https://romaneforgue.com/).
