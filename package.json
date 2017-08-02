@@ -1,11 +1,12 @@
 {
   "name": "imperium",
   "version": "0.0.2",
-  "description": "",
+  "description": "Imperium is a node.js module to control your user's authorizations (ACL).",
   "main": "index.js",
   "scripts": {},
   "author": "",
   "license": "MIT",
+  "homepage": "https://github.com/benjamincanac/imperium",
   "dependencies": {
     "lodash": "^4.17.4"
   }
