@@ -57,3 +57,7 @@ This project has been possible thanks to [Neo9](https://github.com/neo9).
 Inspired by the work of [Matthieu Oviedo](https://github.com/ovmjm).
 
 Logo made by [Romane Forgue](https://romaneforgue.com/).
+
+## License
+
+MIT
