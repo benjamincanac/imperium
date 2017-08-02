@@ -3,10 +3,6 @@ const router = express.Router()
 
 const imperium = require('./imperium')
 
-process.on('unhandledRejection', (rejection) => {
-  throw rejection;
-})
-
 router.route('/users')
   .get(imperium.check([{ action: 'seeUser' }]), (req, res) => { res.json({}) })
 

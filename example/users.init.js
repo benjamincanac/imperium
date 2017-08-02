@@ -12,9 +12,9 @@ imperium.addActions([
 
 imperium.role('user')
   .can([
-    { action: 'seeUser', user: '@', bucket: 'front' },
-    { action: 'manageUser', user: '@', bucket: 'front' }
+    { action: 'seeUser', user: '@' },
+    { action: 'manageUser', user: '@' }
   ])
 
 imperium.role('admin')
-  .isParentOf('user', { user: '*', bucket: '*' })
+  .is('user', { user: '*' })

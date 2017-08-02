@@ -23,8 +23,7 @@ const users = [
     acl: [
       {
         role: 'user',
-        user: '2',
-        bucket: 'front'
+        user: '2'
       }
     ]
   },

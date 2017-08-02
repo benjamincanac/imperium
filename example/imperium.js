@@ -16,6 +16,6 @@ module.exports = Imperium({
   // }
 
   async getUserAcl(req) {
-    return db.users[1].acl;
+    return db.users[0].acl
   }
 })
