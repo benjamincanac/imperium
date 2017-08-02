@@ -11,7 +11,6 @@ class ImperiumRole {
   }
 
   can(perms) {
-    // check if actions are valid
     perms.forEach((perm) => {
       const actionName = perm.action
 
@@ -23,12 +22,12 @@ class ImperiumRole {
     return this
   }
 
-  isParentOf(childRoleName, childRolePerm) {
+  is(childRoleName, childRolePerm) {
     const child = this.imperium.roles[childRoleName]
 
     assert(child, `Role ${childRoleName} does not exist`)
 
-    this.role.children.push({ role: childRoleName, perm: childRolePerm })
+    this.role.children.push(_.merge({ role: childRoleName }, childRolePerm))
 
     return this
   }
@@ -61,12 +60,19 @@ class Imperium {
   }
 
   evaluateUserPerm(perm, context) {
-    _.forIn(perm, (value, key) => {
-      if (value === '@') perm[key] = context[key]
-      else if (value[0] === '@') perm[key] = context[value.substr(1)]
-    });
+    const evaluatedPerm = {}
 
-    return perm;
+    _.forIn(perm, (value, key) => {
+      if (value === '@') evaluatedPerm[key] = context[key]
+      else if (value[0] === '@') evaluatedPerm[key] = context[value.substr(1)]
+      else evaluatedPerm[key] = value
+
+      if (typeof evaluatedPerm[key] === 'undefined') {
+        throw new Error(`User acl key "${key}" in "${context.role}" role is not defined`)
+      }
+    })
+
+    return evalutedPerm
   }
 
   evaluateUserPerms(userAcl) {
@@ -108,23 +114,39 @@ class Imperium {
       })
   }
 
-  // TODO
-  getUserAclChildren(userAcl) {
-    return userAcl
+  getUserAclChildren(userAcl, childrenAcl) {
+    childrenAcl = childrenAcl || []
+
+    userAcl.forEach((acl) => {
+      childrenAcl.push(acl)
+
+      const aclRole = this.roles[acl.role]
+
+      if (aclRole) {
+        const children = aclRole.children
+
+        if (children.length) this.getUserAclChildren(children, childrenAcl)
+      }
+    })
+
+    return childrenAcl
   }
 
   matchPerm(routePerm, userPerm) {
-    for (const perm in routePerm) {
-      const userPermValue = userPerm[perm]
-      const routePermValue = routePerm[perm]
+    // get all params from route and user
+    const keys = _.chain(_.keys(routePerm)).concat(_.keys(userPerm)).uniq().without('action').value()
 
-      if (userPermValue) {
-        if (userPermValue === 'object' && userPermValue.indexOf(routePermValue) === -1) return false;
-        else if (userPermValue !== routePermValue) return false;
+    for (const key of keys) {
+      const userPermValue = userPerm[key]
+      const routePermValue = routePerm[key] || '*'
+
+      if (userPermValue !== '*') {
+        if (Array.isArray(userPermValue) && userPermValue.indexOf(routePermValue) === -1) return false
+        else if (userPermValue !== routePermValue) return false
       }
     }
 
-    return true;
+    return true
   }
 
   // check if user has every perm required by the route
@@ -140,12 +162,16 @@ class Imperium {
     context = context || this.context
 
     return async (req, res, next) => {
-      const userAcl = await this.getUserAcl(req)
-      const userAclChildren = this.getUserAclChildren(userAcl)
-      const userPerms = this.evaluateUserPerms(userAclChildren)
-      const routePerms = this.evaluateRoutePerms(req, perms, context)
+      try {
+        const userAcl = await this.getUserAcl(req)
+        const userAclChildren = this.getUserAclChildren(userAcl)
+        const userPerms = this.evaluateUserPerms(userAclChildren)
+        const routePerms = this.evaluateRoutePerms(req, perms, context)
+      } catch (err) {
+        return next(err)
+      }
 
-      if (!this.checkPerms(routePerms, userPerms)) return next(new Error('invalid-perms'));
+      if (!this.checkPerms(routePerms, userPerms)) return next(new Error('invalid-perms'))
 
       return next()
     }
