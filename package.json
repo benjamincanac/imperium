@@ -2,8 +2,18 @@
   "name": "imperium",
   "version": "0.0.3",
   "description": "Imperium is a node.js module to control your user's authorizations (ACL).",
-  "main": "index.js",
-  "scripts": {},
+  "main": "dist/src/index.js",
+  "types": "dist/src/idnex.d.ts",
+  "files": [
+    "dist/src"
+  ],
+  "scripts": {
+    "build": "rimraf dist/ && tsc",
+    "lint": "tslint src/*.ts",
+    "test": "npm run lint && npm run build && nyc --reporter=lcov ava --verbose dist/test/",
+    "preversion": "npm test",
+    "prepublish": "npm run build"
+  },
   "author": "Benjamin Canac",
   "license": "MIT",
   "repository": {
@@ -11,10 +21,26 @@
     "url": "git+https://github.com/benjamincanac/imperium"
   },
   "keywords": [
-    "nodejs",
-    "acl"
+    "node acl",
+    "acl",
+    "authorization",
+    "user acl",
+    "imperium"
   ],
   "dependencies": {
     "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.71",
+    "@types/node": "^8.0.19",
+    "ava": "^0.21.0",
+    "express": "^4.15.3",
+    "nyc": "^11.1.0",
+    "request": "^2.81.0",
+    "request-promise-native": "^1.0.4",
+    "rimraf": "^2.6.1",
+    "std-mocks": "^1.0.1",
+    "tslint": "^5.5.0",
+    "typescript": "^2.4.2"
   }
 }

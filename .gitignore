@@ -1,1 +1,16 @@
-node_modules/
+# Dependencies
+node_modules
+
+# Build
+dist
+
+# Logs
+npm-debug.log
+
+# Coverage
+coverage
+.nyc_output
+
+# Editors
+.vscode
+.idea
