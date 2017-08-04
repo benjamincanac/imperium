@@ -45,7 +45,7 @@ test.before('Start server', async (t) => {
 	const app = express()
 	app.use(require('./fixtures/users/routes').default)
 	app.use((err, req, res, next) => {
-		res.status(403).json({ message: err.message })
+		res.status(err.statusCode).json({ message: err.message })
 	})
 	const server = app.listen(port)
 	// Add variables to context

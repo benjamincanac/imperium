@@ -1,6 +1,7 @@
 import * as _ from 'lodash'
 import * as assert from 'assert'
 
+import HttpError from './http-error'
 import { ImperiumRole } from './role'
 
 export class Imperium {
@@ -42,7 +43,7 @@ export class Imperium {
 				const userPerms = this.evaluateUserPerms(userAclChildren)
 				const routePerms = this.evaluateRoutePerms(req, perms, context)
 
-				if (!this.checkPerms(routePerms, userPerms)) return next(new Error('invalid-perms'))
+				if (!this.checkPerms(routePerms, userPerms)) return next(new HttpError(403, 'invalid-perms'))
 
 				return next()
 			} catch (err) {
@@ -64,7 +65,7 @@ export class Imperium {
 			else evaluatedPerm[key] = value
 
 			if (typeof evaluatedPerm[key] === 'undefined') {
-				throw new Error(`User acl key "${key}" in "${context.role}" role is not defined`)
+				throw new HttpError(400, `User acl key "${key}" in "${context.role}" role is not defined`)
 			}
 		})
 
