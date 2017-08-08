@@ -14,41 +14,63 @@ npm install --save imperium
 
 ## Usage
 
-```js
-const Imperium = require('imperium')
-
-const imperium = Imperium(/* options */)
-
-// User roles
-imperium.addRoles([
-  'admin',
-  'user'
-])
-
-// List of user actions
-imperium.addActions([
-  'manageUser',
-  'seeUser'
-])
-
-// Define user permissions
-imperium.role('user').can([
-  // '@' means itself
-  { action: 'manageUser', user: '@' },
-  { action: 'seeUser', user: '@' }
-])
-
-// Define admin permissions
-imperium.role('admin').is('user', { user: '*' })
-// '*' means all, so admin will be able to manage and see all users
-
-// Use imperium.check(...) to secure the route
-app.put('/users/:id', imperium.check([{ action: 'manageUser', user: ':id' }]), updateUser)
+```ts
+import imperium from 'imperium'
 ```
 
-## API
+## Roles
 
-### Imperium(options)
+Define the different roles of your applications.
+
+You can use imperium.role('...', (req) => {}) as a setter to create a role. The async function will be used to determine if your user has the role. You can for example get your user in MongoDB and return :
+
+- an object to compare with the route actions
+- a boolean (true / false)
+
+```ts
+imperium.role('admin', async (req) => {
+	const userId = parseInt(req.headers.userid)
+	const user = db.users[userId]
+
+	return user.role === 'admin'
+})
+
+imperium.role('user', async (req) => {
+	const userId = parseInt(req.headers.userid)
+	const user = db.users[userId]
+
+	return { user: user._id }
+})
+```
+
+## Actions
+
+You can use imperium.role('...') as a getter in order to use the `can` and `is` functions.
+
+```ts
+imperium.role('user')
+	.can('seeUser', { user: '@' })
+	.can('manageUser', { user: '@' }) // '@' means itself
+
+imperium.role('admin')
+	.is('user', { user: '*' }) // '*' means all, so admin can see and manage all users
+```
+
+## Middleware
+
+You can use Imperium middleware (can / is) in any Express app.
+
+```ts
+// Use imperium.can(...) to secure the route with actions
+app.get('/users', imperium.can('seeUser'), ...)
+
+app.get('/users/:userId', imperium.can({ action: 'seeUser', user: ':userId' }), ...)
+
+app.put('/users/:userId', imperium.can([{ action: 'manageUser', user: ':userId' }]), ...)
+
+// Use imperium.is(...) to secure the route with roles
+app.get('/users', imperium.is('admin', ...))
+```
 
 ## Credits
 
