@@ -1,28 +1,27 @@
-import { Imperium } from '../../../src'
+import imperium from '../../../src'
 import db from './db'
 
-const imperium = new Imperium({
-	async getUserAcl(req) {
-		const index = Number(req.headers.userid || 1) - 1
-		return db.users[index].acl
-	}
+imperium.role('admin', (req) => {
+	return new Promise((resolve, reject) => {
+		const userId: number = parseInt(req.headers.userid, 10)
+		const user: any = db.users[userId - 1]
+
+		resolve(user.role === 'admin')
+	})
 })
 
-imperium.addRoles([
-	'admin',
-	'user'
-])
+imperium.role('user', (req) => {
+	return new Promise((resolve, reject) => {
+		const userId: number = parseInt(req.headers.userid, 10)
+		const user: any = db.users[userId - 1]
 
-imperium.addActions([
-	'seeUser',
-	'manageUser'
-])
+		resolve({ user: user._id })
+	})
+})
 
 imperium.role('user')
-	.can([
-		{ action: 'seeUser', user: '@' },
-		{ action: 'manageUser', user: '@' }
-	])
+	.can('seeUser', { user: '@' })
+	.can('manageUser', { user: '@' })
 
 imperium.role('admin')
 	.is('user', { user: '*' })

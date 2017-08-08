@@ -3,11 +3,14 @@ import imperium from './imperium'
 
 const router = Router()
 
+const callback = (req, res) => { res.json() }
+
 router.route('/users')
-	.get(imperium.check([{ action: 'seeUser' }]), (req, res) => { res.json({}) })
+	.get(imperium.can('seeUser'), callback)
 
 router.route('/users/:userId')
-	.get(imperium.check([{ action: 'seeUser', user: ':userId' }]), (req, res) => { res.json({}) })
-	.put(imperium.check([{ action: 'manageUser', user: ':userId' }]), (req, res) => { res.json({}) })
+	.get(imperium.can({ action: 'seeUser', user: ':userId' }), callback)
+	.put(imperium.can([{ action: 'manageUser', user: ':userId' }]), callback)
+	.delete(imperium.is('admin'), callback)
 
 export default router

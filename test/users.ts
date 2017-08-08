@@ -55,14 +55,58 @@ test.before('Start server', async (t) => {
 	stdMocks.restore()
 })
 
-test('Call /users with admin user => OK', async (t) => {
+test('GET /users with admin user => 200', async (t) => {
 	const { res, err } = await get('/users', { headers: { userId: 1 } })
+
 	t.falsy(err)
 	t.is(res.statusCode, 200)
 })
 
-test('Call /users with normal user => invalid-perms', async (t) => {
+test('GET /users with normal user 2 => 403 (invalid-perms)', async (t) => {
 	const { err } = await get('/users', { headers: { userId: 2 } })
+
+	t.is(err.statusCode, 403)
+	t.is(err.response.body.message, 'invalid-perms')
+})
+
+test('GET /users/1 with admin user => 200', async (t) => {
+	const { res, err } = await get('/users/1', { headers: { userId: 1 } })
+
+	t.falsy(err)
+	t.is(res.statusCode, 200)
+})
+
+test('PUT /users/2 with admin user => 200', async (t) => {
+	const { res, err } = await put('/users/2', { headers: { userId: 1 } })
+
+	t.falsy(err)
+	t.is(res.statusCode, 200)
+})
+
+test('PUT /users/2 with normal user 2 => 200', async (t) => {
+	const { res, err } = await put('/users/2', { headers: { userId: 2 } })
+
+	t.falsy(err)
+	t.is(res.statusCode, 200)
+})
+
+test('PUT /users/3 with normal user 3 => 403 (invalid-perms)', async (t) => {
+	const { res, err } = await put('/users/2', { headers: { userId: 3 } })
+
+	t.is(err.statusCode, 403)
+	t.is(err.response.body.message, 'invalid-perms')
+})
+
+test('DELETE /users/1 with admin user => 200', async (t) => {
+	const { res, err } = await del('/users/1', { headers: { userId: 1 } })
+
+	t.falsy(err)
+	t.is(res.statusCode, 200)
+})
+
+test('DELETE /users/1 with normal user => 403 (invalid-perms)', async (t) => {
+	const { res, err } = await del('/users/1', { headers: { userId: 2 } })
+
 	t.is(err.statusCode, 403)
 	t.is(err.response.body.message, 'invalid-perms')
 })
