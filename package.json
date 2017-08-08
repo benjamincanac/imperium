@@ -23,8 +23,10 @@
   "keywords": [
     "node acl",
     "acl",
+    "auth",
     "authorization",
     "user acl",
+    "security",
     "imperium"
   ],
   "dependencies": {
