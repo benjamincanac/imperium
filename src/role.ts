@@ -1,33 +1,44 @@
 import * as assert from 'assert'
-import { merge } from 'lodash'
+import { cloneDeep } from 'lodash'
+
+interface Role {
+	children: any[]
+	actions: any[]
+}
 
 export class ImperiumRole {
-	private role
+	private role: Role
 
-	constructor(private imperium, private roleName) {
+	constructor(private imperium, private roleName: string) {
 		this.role = this.imperium.roles[this.roleName]
 
 		assert(this.role, `Role ${this.roleName} does not exist`)
 	}
 
-	public can(perms) {
-		perms.forEach((perm) => {
-			const actionName = perm.action
-
-			assert(this.imperium.actions[actionName], `Action ${actionName} does not exist`)
-
-			this.role.perms.push(perm)
-		})
+	public can(action: string, params: object = {}) {
+		this.role.actions.push({ action, params })
 
 		return this
 	}
 
-	public is(childRoleName, childRolePerm) {
-		const child = this.imperium.roles[childRoleName]
+	public is(childRoleName: string, params: object = {}) {
+		const childRole = this.imperium.roles[childRoleName]
 
-		assert(child, `Role ${childRoleName} does not exist`)
+		assert(childRole, `Role ${childRoleName} does not exist`)
+		console.log('childRole.actions', childRole.actions)
 
-		this.role.children.push(merge({ role: childRoleName }, childRolePerm))
+		this.role.actions = this.role.actions.concat(childRole.actions.slice().map((childRoleAction) => {
+			const action = cloneDeep(childRoleAction)
+
+			// Replace action params only if exists
+			Object.keys(params).forEach((key) => {
+				if (typeof action.params[key] !== 'undefined') action.params[key] = params[key]
+			})
+
+			return action
+		}))
+
+		console.log('childRole.actions', childRole.actions)
 
 		return this
 	}

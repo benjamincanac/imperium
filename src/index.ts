@@ -1,49 +1,29 @@
 import * as _ from 'lodash'
 import * as assert from 'assert'
 
-import HttpError from './http-error'
+import AuthorizationError from './authorization-error'
 import { ImperiumRole } from './role'
 
 export class Imperium {
+	public AuthorizationError = AuthorizationError
+
 	private roles = {}
-	private actions = {}
-	private getUserAcl
 	private context = ['params', 'query', 'headers', 'body', 'session']
 
-	constructor(options) {
-		this.getUserAcl = options.getUserAcl
-		this.context = options.context || this.context
+	public role(roleName: string, getAcl?): any {
+		if (!this.roles[roleName] && getAcl) return this.addRole(roleName, getAcl)
 
-		assert(typeof this.getUserAcl === 'function', `getUserAcl must be defined`)
+		return new ImperiumRole(this, roleName)
 	}
 
-	public addRoles(roleNames) {
-		roleNames.forEach((roleName) => {
-			assert(!this.roles[roleName], `Role ${roleName} already exists`)
-
-			this.roles[roleName] = { children: [], perms: [] }
-		})
-	}
-
-	public addActions(actionNames) {
-		actionNames.forEach((actionName) => {
-			assert(!this.actions[actionName], `Action ${actionName} already exists`)
-
-			this.actions[actionName] = true
-		})
-	}
-
-	public check(perms, context?) {
-		context = context || this.context
-
+	// check if user has role
+	public is(roleName: string) {
 		return async (req, res, next) => {
 			try {
-				const userAcl = await this.getUserAcl(req)
-				const userAclChildren = this.getUserAclChildren(userAcl)
-				const userPerms = this.evaluateUserPerms(userAclChildren)
-				const routePerms = this.evaluateRoutePerms(req, perms, context)
+				const role = this.roles[roleName]
+				const acl = await role.getAcl(req)
 
-				if (!this.checkPerms(routePerms, userPerms)) return next(new HttpError(403, 'invalid-perms'))
+				if (!acl) return next(new AuthorizationError(403, 'invalid-perms'))
 
 				return next()
 			} catch (err) {
@@ -52,41 +32,53 @@ export class Imperium {
 		}
 	}
 
-	public role(roleName) {
-		return new ImperiumRole(this, roleName)
-	}
+	public can(actions: string | object | object[]) {
+		return async (req, res, next) => {
+			try {
+				const routePerms = this.evaluateRouteActions(req, actions, this.context)
 
-	private evaluateUserPerm(perm, context) {
-		const evaluatedPerm = {}
+				const roles: any = _.chain(this.roles)
+					.mapValues((value, role) => _.merge({}, value, { role }))
+					.values()
+					.filter((role: any) => _.intersectionBy(role.actions, routePerms, 'action').length)
+					.value()
 
-		_.forIn(perm, (value, key) => {
-			if (value === '@') evaluatedPerm[key] = context[key]
-			else if (value[0] === '@') evaluatedPerm[key] = context[value.substr(1)]
-			else evaluatedPerm[key] = value
+				const userPerms = await this.evaluateUserActions(req, roles)
 
-			if (typeof evaluatedPerm[key] === 'undefined') {
-				throw new HttpError(400, `User acl key "${key}" in "${context.role}" role is not defined`)
+				if (!this.checkPerms(routePerms, userPerms)) return next(new AuthorizationError(403, 'invalid-perms'))
+
+				return next()
+			} catch (err) {
+				return next(err)
 			}
-		})
-
-		return evaluatedPerm
+		}
 	}
 
-	private evaluateUserPerms(userAcl) {
-		const evaluatedPerms = []
+	private addRole(roleName, getAcl) {
+		assert(!this.roles[roleName], `Role ${roleName} already exists`)
 
-		userAcl.forEach((acl) => {
-			const perms = this.roles[acl.role].perms
+		this.roles[roleName] = { actions: [], getAcl }
+	}
 
-			perms.forEach((perm) => {
-				evaluatedPerms.push(this.evaluateUserPerm(perm, acl))
+	private evaluateRouteActions(req, actions: string | object | object[], context) {
+		let validActions = []
+
+		if (typeof actions === 'string') validActions.push({ action: actions })
+		else if (Array.isArray(actions)) validActions = actions
+		else if (typeof actions === 'object') validActions.push(actions)
+		else throw new Error('invalid-actions-format')
+
+		return validActions
+			.filter((action) => !action.when || action.when(req))
+			.map((action) => {
+				return _.chain(action)
+					.mapValues((expr) => this.evaluateRouteAction(req, expr, context))
+					.omit('when')
+					.value()
 			})
-		})
-
-		return evaluatedPerms
 	}
 
-	private evaluateRoutePerm(req, expr, context) {
+	private evaluateRouteAction(req, expr, context) {
 		if (!(typeof expr === 'string' && expr[0] === ':')) return expr
 
 		const exprKey = expr.substr(1)
@@ -100,31 +92,38 @@ export class Imperium {
 		return null
 	}
 
-	private evaluateRoutePerms(req, perms, context) {
-		return (perms || [])
-			.filter((perm) => !perm.when || perm.when(req))
-			.map((perm) => {
-				return _.chain(perm)
-					.mapValues((expr) => this.evaluateRoutePerm(req, expr, context))
-					.omit('when')
-					.value()
+	private async evaluateUserActions(req, roles) {
+		const evaluatedActions = []
+
+		const aclPromises = roles.map(async (role) => {
+			const acl = await role.getAcl(req)
+
+			if (!acl) return
+
+			role.actions.forEach((action) => {
+				evaluatedActions.push(_.merge({}, { action: action.action }, this.evaluateUserAction(action.params, acl)))
 			})
+		})
+
+		await Promise.all(aclPromises)
+
+		return evaluatedActions
 	}
 
-	private getUserAclChildren(userAcl, childrenAcl = []) {
-		userAcl.forEach((acl) => {
-			childrenAcl.push(acl)
+	private evaluateUserAction(action, context) {
+		const evaluatedAction = {}
 
-			const aclRole = this.roles[acl.role]
+		_.forIn(action, (value, key) => {
+			if (value === '@') evaluatedAction[key] = context[key]
+			else if (value[0] === '@') evaluatedAction[key] = context[value.substr(1)]
+			else evaluatedAction[key] = value
 
-			if (aclRole) {
-				const children = aclRole.children
-
-				if (children.length) this.getUserAclChildren(children, childrenAcl)
+			if (typeof evaluatedAction[key] === 'undefined') {
+				throw new AuthorizationError(400, `User acl key "${key}" in "${context.role}" role is not defined`)
 			}
 		})
 
-		return childrenAcl
+		return evaluatedAction
 	}
 
 	private matchPerm(routePerm, userPerm) {
@@ -154,6 +153,6 @@ export class Imperium {
 	}
 }
 
-// export default (options) => new Imperium(options)
+export type AuthorizationError = AuthorizationError
 
-// module.exports = (options) => new Imperium(options)
+export default new Imperium()
