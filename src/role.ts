@@ -25,7 +25,6 @@ export class ImperiumRole {
 		const childRole = this.imperium.roles[childRoleName]
 
 		assert(childRole, `Role ${childRoleName} does not exist`)
-		console.log('childRole.actions', childRole.actions)
 
 		this.role.actions = this.role.actions.concat(childRole.actions.slice().map((childRoleAction) => {
 			const action = cloneDeep(childRoleAction)
@@ -37,8 +36,6 @@ export class ImperiumRole {
 
 			return action
 		}))
-
-		console.log('childRole.actions', childRole.actions)
 
 		return this
 	}
