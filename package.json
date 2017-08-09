@@ -14,7 +14,14 @@
     "preversion": "npm test",
     "prepublish": "npm run build"
   },
-  "author": "Benjamin Canac",
+  "contributors": [
+    {
+      "name": "Benjamin Canac (@benjamincanac)"
+    },
+    {
+      "name": "Sebastien Chopin (@Atinux)"
+    }
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
