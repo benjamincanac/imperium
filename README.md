@@ -1,4 +1,4 @@
-<h1 align="center"><br><img src="https://user-images.githubusercontent.com/904724/28824466-5d8ece32-76c2-11e7-9410-7ef59cbc819c.png" width="500" alt="Imperium"/><br><br></h1>
+<h1 align="center"><br><img src="https://user-images.githubusercontent.com/904724/28824466-5d8ece32-76c2-11e7-9410-7ef59cbc819c.png" width="400" alt="Imperium"/><br><br></h1>
 
 > Imperium is a node.js module to control your user's authorizations (ACL).
 
