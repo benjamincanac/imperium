@@ -1,11 +1,11 @@
 import * as _ from 'lodash'
 import * as assert from 'assert'
 
-import AuthorizationError from './authorization-error'
+import UnauthorizedError from './unauthorized-error'
 import { ImperiumRole } from './role'
 
 export class Imperium {
-	public AuthorizationError = AuthorizationError
+	public UnauthorizedError = UnauthorizedError
 
 	private roles = {}
 	private context = ['params', 'query', 'headers', 'body', 'session']
@@ -23,7 +23,7 @@ export class Imperium {
 				const role = this.roles[roleName]
 				const acl = await role.getAcl(req)
 
-				if (!acl) return next(new AuthorizationError(403, 'invalid-perms'))
+				if (!acl) return next(new UnauthorizedError(403, 'invalid-perms'))
 
 				return next()
 			} catch (err) {
@@ -45,7 +45,7 @@ export class Imperium {
 
 				const userPerms = await this.evaluateUserActions(req, roles)
 
-				if (!this.checkPerms(routePerms, userPerms)) return next(new AuthorizationError(403, 'invalid-perms'))
+				if (!this.checkPerms(routePerms, userPerms)) return next(new UnauthorizedError(403, 'invalid-perms'))
 
 				return next()
 			} catch (err) {
@@ -119,7 +119,7 @@ export class Imperium {
 			else evaluatedAction[key] = value
 
 			if (typeof evaluatedAction[key] === 'undefined') {
-				throw new AuthorizationError(400, `User acl key "${key}" in "${context.role}" role is not defined`)
+				throw new UnauthorizedError(400, `User acl key "${key}" in "${context.role}" role is not defined`)
 			}
 		})
 
@@ -153,6 +153,6 @@ export class Imperium {
 	}
 }
 
-export type AuthorizationError = AuthorizationError
+export type UnauthorizedError = UnauthorizedError
 
 export default new Imperium()
