@@ -10,6 +10,15 @@ imperium.role('admin', (req) => {
 	})
 })
 
+imperium.role('moderator', (req) => {
+	return new Promise((resolve, reject) => {
+		const userId: number = parseInt(req.headers.userid, 10)
+		const user: any = db.users[userId - 1]
+
+		resolve(user.role === 'moderator')
+	})
+})
+
 imperium.role('user', (req) => {
 	return new Promise((resolve, reject) => {
 		const userId: number = parseInt(req.headers.userid, 10)
