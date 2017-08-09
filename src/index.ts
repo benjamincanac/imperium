@@ -11,19 +11,30 @@ export class Imperium {
 	private context = ['params', 'query', 'headers', 'body', 'session']
 
 	public role(roleName: string, getAcl?): any {
-		if (!this.roles[roleName] && getAcl) return this.addRole(roleName, getAcl)
+		if (!this.roles[roleName] && getAcl) this.addRole(roleName, getAcl)
 
 		return new ImperiumRole(this, roleName)
 	}
 
 	// check if user has role
-	public is(roleName: string) {
+	public is(roleName: string | string[]) {
+		const roleNames: string[] = Array.isArray(roleName) ? roleName : [roleName]
+
 		return async (req, res, next) => {
 			try {
-				const role = this.roles[roleName]
-				const acl = await role.getAcl(req)
+				const promises = roleNames.map(async (name) => {
+					const role = this.roles[name]
 
-				if (!acl) return next(new UnauthorizedError(403, 'invalid-perms'))
+					if (!role) throw new UnauthorizedError(400, 'invalid-role', { role: name })
+
+					const acl = await role.getAcl(req)
+
+					return !!acl
+				})
+
+				const hasRoles = await Promise.all(promises)
+
+				if (hasRoles.indexOf(true) === -1) return next(new UnauthorizedError(403, 'invalid-perms'))
 
 				return next()
 			} catch (err) {
@@ -33,9 +44,15 @@ export class Imperium {
 	}
 
 	public can(actions: string | object | object[]) {
+		let validActions: any[] = Array.isArray(actions) ? actions : [actions]
+
+		validActions = validActions.map((validAction) => {
+			return typeof validAction === 'string' ? { action: validAction } : validAction
+		})
+
 		return async (req, res, next) => {
 			try {
-				const routePerms = this.evaluateRouteActions(req, actions, this.context)
+				const routePerms = this.evaluateRouteActions(req, validActions, this.context)
 
 				const roles: any = _.chain(this.roles)
 					.mapValues((value, role) => _.merge({}, value, { role }))
@@ -60,15 +77,8 @@ export class Imperium {
 		this.roles[roleName] = { actions: [], getAcl }
 	}
 
-	private evaluateRouteActions(req, actions: string | object | object[], context) {
-		let validActions = []
-
-		if (typeof actions === 'string') validActions.push({ action: actions })
-		else if (Array.isArray(actions)) validActions = actions
-		else if (typeof actions === 'object') validActions.push(actions)
-		else throw new Error('invalid-actions-format')
-
-		return validActions
+	private evaluateRouteActions(req, actions: any[], context) {
+		return actions
 			.filter((action) => !action.when || action.when(req))
 			.map((action) => {
 				return _.chain(action)
