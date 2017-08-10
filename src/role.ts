@@ -6,7 +6,7 @@ interface Role {
 	actions: any[]
 }
 
-export class ImperiumRole {
+export default class ImperiumRole {
 	private role: Role
 
 	constructor(private imperium, private roleName: string) {
@@ -31,6 +31,7 @@ export class ImperiumRole {
 
 			// Replace action params only if exists
 			Object.keys(params).forEach((key) => {
+				/* istanbul ignore else */
 				if (typeof action.params[key] !== 'undefined') action.params[key] = params[key]
 			})
 

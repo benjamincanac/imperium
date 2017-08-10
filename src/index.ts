@@ -2,9 +2,9 @@ import * as _ from 'lodash'
 import * as assert from 'assert'
 
 import UnauthorizedError from './unauthorized-error'
-import { ImperiumRole } from './role'
+import ImperiumRole from './role'
 
-export class Imperium {
+class Imperium {
 	public UnauthorizedError = UnauthorizedError
 
 	private roles = {}
@@ -163,6 +163,6 @@ export class Imperium {
 	}
 }
 
-export type UnauthorizedError = UnauthorizedError
+export { Imperium, ImperiumRole, UnauthorizedError }
 
 export default new Imperium()

@@ -1,4 +1,4 @@
-class UnauthorizedError extends Error {
+export default class UnauthorizedError extends Error {
 	public statusCode
 	public context
 
@@ -11,5 +11,3 @@ class UnauthorizedError extends Error {
 		Object.setPrototypeOf(this, UnauthorizedError.prototype)
 	}
 }
-
-export default UnauthorizedError
