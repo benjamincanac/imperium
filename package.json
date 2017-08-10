@@ -25,7 +25,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/benjamincanac/imperium"
+    "url": "git+https://github.com/terrajs/imperium"
   },
   "keywords": [
     "node acl",
