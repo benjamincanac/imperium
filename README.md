@@ -9,7 +9,7 @@
 ## Installation
 
 ```
-npm install --save imperium
+npm install --save @terrajs/imperium
 ```
 
 ## Usage
@@ -63,6 +63,7 @@ You can use Imperium middleware (can / is) in any Express app.
 ```ts
 // Use imperium.can(...) to secure the route with actions
 app.get('/users', imperium.can('seeUser'), ...)
+app.get('/users', imperium.can(['seeUser', 'manageUser']), ...) // array acts as an AND
 
 app.get('/users/:userId', imperium.can({ action: 'seeUser', user: ':userId' }), ...)
 
@@ -70,6 +71,7 @@ app.put('/users/:userId', imperium.can([{ action: 'manageUser', user: ':userId' 
 
 // Use imperium.is(...) to secure the route with roles
 app.get('/users', imperium.is('admin', ...))
+app.get('/users', imperium.is(['admin', 'user'], ...)) // array acts as an OR
 ```
 
 ## Credits
