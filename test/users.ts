@@ -61,105 +61,105 @@ test.before('Start server', async (t) => {
 })
 
 test('GET /users with admin user => 200', async (t) => {
-	const { res, err } = await get('/users', { headers: { userId: 1 } })
+	const { res, err } = await get('/users', { headers: { userId: 0 } })
 
 	t.falsy(err)
 	t.is(res.statusCode, 200)
 })
 
 test('PUT /users with admin user => 200', async (t) => {
-	const { res, err } = await put('/users', { headers: { userId: 1 } })
+	const { res, err } = await put('/users', { headers: { userId: 0 } })
 
 	t.falsy(err)
 	t.is(res.statusCode, 200)
 })
 
 test('POST /users with admin user => 200', async (t) => {
-	const { res, err } = await post('/users', { headers: { userId: 1 } })
+	const { res, err } = await post('/users', { headers: { userId: 0 } })
 
 	t.falsy(err)
 	t.is(res.statusCode, 200)
 })
 
 test('DELETE /users with admin user => 200', async (t) => {
-	const { res, err } = await del('/users', { headers: { userId: 1 } })
+	const { res, err } = await del('/users', { headers: { userId: 0 } })
 
 	t.falsy(err)
 	t.is(res.statusCode, 200)
 })
 
-test('GET /users with normal user 2 => 403 (invalid-perms)', async (t) => {
-	const { err } = await get('/users', { headers: { userId: 2 } })
+test('GET /users with normal user 1 => 403 (invalid-perms)', async (t) => {
+	const { err } = await get('/users', { headers: { userId: 1 } })
 
 	t.is(err.statusCode, 403)
 	t.is(err.response.body.message, 'invalid-perms')
 })
 
-test('PUT /users with normal user 2 => 403 (invalid-perms)', async (t) => {
-	const { err } = await put('/users', { headers: { userId: 2 } })
+test('PUT /users with normal user 1 => 403 (invalid-perms)', async (t) => {
+	const { err } = await put('/users', { headers: { userId: 1 } })
 
 	t.is(err.statusCode, 403)
 	t.is(err.response.body.message, 'invalid-perms')
 })
 
-test('POST /users with normal user 2 => 403 (invalid-perms)', async (t) => {
-	const { err } = await post('/users', { headers: { userId: 2 } })
+test('POST /users with normal user 1 => 403 (invalid-perms)', async (t) => {
+	const { err } = await post('/users', { headers: { userId: 1 } })
 
 	t.is(err.statusCode, 403)
 	t.is(err.response.body.message, 'invalid-perms')
 })
 
-test('DELETE /users with normal user 2 => 403 (invalid-perms)', async (t) => {
-	const { err } = await del('/users', { headers: { userId: 2 } })
+test('DELETE /users with normal user 1 => 403 (invalid-perms)', async (t) => {
+	const { err } = await del('/users', { headers: { userId: 1 } })
 
 	t.is(err.statusCode, 403)
 	t.is(err.response.body.message, 'invalid-perms')
 })
 
-test('GET /users/1 with admin user => 200', async (t) => {
-	const { res, err } = await get('/users/1', { headers: { userId: 1 } })
+test('GET /users/0 with admin user => 200', async (t) => {
+	const { res, err } = await get('/users/0', { headers: { userId: 0 } })
 
 	t.falsy(err)
 	t.is(res.statusCode, 200)
 })
 
-test('PUT /users/2 with admin user => 200', async (t) => {
-	const { res, err } = await put('/users/2', { headers: { userId: 1 } })
+test('PUT /users/1 with admin user => 200', async (t) => {
+	const { res, err } = await put('/users/1', { headers: { userId: 0 } })
 
 	t.falsy(err)
 	t.is(res.statusCode, 200)
 })
 
-test('PUT /users/2 with normal user 2 => 200', async (t) => {
-	const { res, err } = await put('/users/2', { headers: { userId: 2 } })
+test('PUT /users/1 with normal user 1 => 200', async (t) => {
+	const { res, err } = await put('/users/1', { headers: { userId: 1 } })
 
 	t.falsy(err)
 	t.is(res.statusCode, 200)
 })
 
-test('PUT /users/3 with normal user 3 => 403 (invalid-perms)', async (t) => {
-	const { res, err } = await put('/users/2', { headers: { userId: 3 } })
+test('PUT /users/2 with normal user 2 => 403 (invalid-perms)', async (t) => {
+	const { res, err } = await put('/users/1', { headers: { userId: 2 } })
 
 	t.is(err.statusCode, 403)
 	t.is(err.response.body.message, 'invalid-perms')
 })
 
 test('DELETE /users/1 with admin user => 200', async (t) => {
-	const { res, err } = await del('/users/1', { headers: { userId: 1 } })
+	const { res, err } = await del('/users/1', { headers: { userId: 0 } })
 
 	t.falsy(err)
 	t.is(res.statusCode, 200)
 })
 
 test('DELETE /users/1 with normal user => 403 (invalid-perms)', async (t) => {
-	const { res, err } = await del('/users/1', { headers: { userId: 2 } })
+	const { res, err } = await del('/users/1', { headers: { userId: 1 } })
 
 	t.is(err.statusCode, 403)
 	t.is(err.response.body.message, 'invalid-perms')
 })
 
 test('POST /users/1 with normal user => 400 (invalid-role)', async (t) => {
-	const { res, err } = await post('/users/1', { headers: { userId: 2 } })
+	const { res, err } = await post('/users/1', { headers: { userId: 1 } })
 
 	t.is(err.statusCode, 400)
 	t.is(err.response.body.message, 'invalid-role')
