@@ -7,6 +7,11 @@
   "files": [
     "dist/src"
   ],
+  "nyc": {
+    "include": [
+      "dist/src/"
+    ]
+  },
   "scripts": {
     "build": "rimraf dist/ && tsc",
     "lint": "tslint src/*.ts",
