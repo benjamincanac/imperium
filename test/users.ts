@@ -15,7 +15,7 @@ let context: any = {}
 const url = (path: string = '/') => `http://localhost:${context.port}` + join('/', path)
 const wrapLogs = async (apiCall) => {
 	// Store logs output
-	// stdMocks.use()
+	stdMocks.use()
 	// Call API & check response
 	let res = null
 	let err = null
@@ -27,7 +27,7 @@ const wrapLogs = async (apiCall) => {
 	// Get logs ouput & check logs
 	const { stdout, stderr } = stdMocks.flush()
 	// Restore logs output
-	// stdMocks.restore()
+	stdMocks.restore()
 	// Return err, res and output
 	return { res, err, stdout, stderr }
 }
