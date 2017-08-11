@@ -99,7 +99,7 @@ class Imperium {
 			}
 		}
 
-		return null
+		throw new UnauthorizedError(400, `Route acl key "${expr}" is not defined`)
 	}
 
 	private async evaluateUserActions(req, roles) {
@@ -128,9 +128,8 @@ class Imperium {
 			else if (value[0] === '@') evaluatedAction[key] = context[value.substr(1)]
 			else evaluatedAction[key] = value
 
-			if (typeof evaluatedAction[key] === 'undefined') {
-				throw new UnauthorizedError(400, `User acl key "${key}" in "${context.role}" role is not defined`)
-			}
+			// TODO: Check if this line is relevant
+			// if (typeof evaluatedAction[key] === 'undefined') throw new UnauthorizedError(400, `User acl key "${key}" in "${context.role}" role is not defined`)
 		})
 
 		return evaluatedAction
@@ -138,15 +137,16 @@ class Imperium {
 
 	private matchPerm(routePerm, userPerm) {
 		// get all params from route and user
-		const keys = _.chain(_.keys(routePerm)).concat(_.keys(userPerm)).uniq().without('action').value()
+		const keys = _.chain(_.keys(routePerm)).concat(_.keys(userPerm)).uniq().value()
 
 		for (const key of keys) {
 			const userPermValue = userPerm[key]
 			const routePermValue = routePerm[key] || '*'
 
 			if (userPermValue !== '*') {
-				if (Array.isArray(userPermValue) && userPermValue.indexOf(routePermValue) === -1) return false
-				else if (userPermValue !== routePermValue) return false
+				if (Array.isArray(userPermValue)) {
+					if (userPermValue.indexOf(routePermValue) === -1) return false
+				} else if (userPermValue !== routePermValue) return false
 			}
 		}
 
