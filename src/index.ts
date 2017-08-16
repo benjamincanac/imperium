@@ -8,7 +8,7 @@ class Imperium {
 	public UnauthorizedError = UnauthorizedError
 
 	private roles = {}
-	private context = ['params', 'query', 'headers', 'body', 'session']
+	private context = ['params', 'query', 'headers', 'body']
 
 	public role(roleName: string, getAcl?): any {
 		if (!this.roles[roleName] && getAcl) this.addRole(roleName, getAcl)
