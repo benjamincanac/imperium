@@ -23,8 +23,11 @@ import imperium from 'imperium'
 
 Define the different roles of your applications.
 
-You can use `imperium.role('...', (req) => {})` as a setter to create a role. The async function will be used to determine if your user has the role. You can for example get your user in MongoDB and return :
+You can use `imperium.role('...', (req) => {})` as a setter to create a role.
 
+The function (can be `asynchronous` by returning a `Promise`) will be used to determine if your user has the role.
+
+You can for example get your user in MongoDB and return :
 - a `Boolean` (`true` if user has the corresponding role, otherwise `false`)
 - an `Object` to compare with the route actions
 
