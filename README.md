@@ -30,17 +30,11 @@ You can use imperium.role('...', (req) => {}) as a setter to create a role. The 
 
 ```ts
 imperium.role('admin', async (req) => {
-	const userId = parseInt(req.headers.userid)
-	const user = db.users[userId]
-
-	return user.role === 'admin'
+	return req.session.role === 'admin'
 })
 
 imperium.role('user', async (req) => {
-	const userId = parseInt(req.headers.userid)
-	const user = db.users[userId]
-
-	return { user: user._id }
+	return { user: req.session.userId }
 })
 ```
 
