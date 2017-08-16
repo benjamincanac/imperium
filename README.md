@@ -23,10 +23,10 @@ import imperium from 'imperium'
 
 Define the different roles of your applications.
 
-You can use imperium.role('...', (req) => {}) as a setter to create a role. The async function will be used to determine if your user has the role. You can for example get your user in MongoDB and return :
+You can use `imperium.role('...', (req) => {})` as a setter to create a role. The async function will be used to determine if your user has the role. You can for example get your user in MongoDB and return :
 
-- an object to compare with the route actions
-- a boolean (true / false)
+- a `Boolean` (`true` if user has the corresponding role, otherwise `false`)
+- an `Object` to compare with the route actions
 
 ```ts
 imperium.role('admin', async (req) => {
@@ -40,7 +40,7 @@ imperium.role('user', async (req) => {
 
 ## Actions
 
-You can use imperium.role('...') as a getter in order to use the `can` and `is` functions.
+You can use `imperium.role('...')` as a getter in order to use the `can` and `is` functions.
 
 ```ts
 imperium.role('user')
