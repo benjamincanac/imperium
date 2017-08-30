@@ -4,7 +4,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@terrajs/imperium.svg)](https://www.npmjs.com/package/@terrajs/imperium)
 [![Travis](https://img.shields.io/travis/terrajs/imperium/master.svg)](https://travis-ci.org/terrajs/imperium)
-[![Coverage](https://img.shields.io/codecov/c/github/terrajs/imperium/master.svg)](https://codecov.io/gh/terrajs/imperium.js)
+[![Coverage](https://img.shields.io/codecov/c/github/terrajs/imperium/master.svg)](https://codecov.io/gh/terrajs/imperium)
 [![license](https://img.shields.io/github/license/terrajs/imperium.svg)](https://github.com/terrajs/imperium/blob/master/LICENSE.md)
 
 ## Installation
