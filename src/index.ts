@@ -4,6 +4,8 @@ import * as assert from 'assert'
 import UnauthorizedError from './unauthorized-error'
 import ImperiumRole from './role'
 
+const EXPR_REGEXP = /:[A-Za-z0-9_]+/g
+
 class Imperium {
 	public UnauthorizedError = UnauthorizedError
 
@@ -82,24 +84,41 @@ class Imperium {
 			.filter((action) => !action.when || action.when(req))
 			.map((action) => {
 				return _.chain(action)
-					.mapValues((expr) => this.evaluateRouteAction(req, expr, context))
+					.mapValues((expr, key) => this.evaluateRouteAction(req, expr, key, context))
 					.omit('when')
 					.value()
 			})
 	}
 
-	private evaluateRouteAction(req, expr, context) {
-		if (!(typeof expr === 'string' && expr[0] === ':')) return expr
+	private evaluateRouteAction(req, expr, key, context) {
+		// expr does not contain ':'
+		if (!(typeof expr === 'string' && expr.indexOf(':') !== -1)) return expr
 
-		const exprKey = expr.substr(1)
+		// alias shortcut ex: { user: ':' } => { user: ':user' }
+		if (expr === ':') expr += key
 
-		for (const key of context) {
-			if (req[key] && req[key][exprKey]) {
-				return req[key][exprKey]
+		let evaluatedExpr = expr
+		// ex: ':owner/:name' => [ ':owner', ':name' ]
+		const exprKeys = expr.match(EXPR_REGEXP)
+
+		for (let exprKey of exprKeys) {
+			exprKey = exprKey.substr(1)
+			// context: ['params', 'body', ...]
+			for (const contextKey of context) {
+				if (req[contextKey] && req[contextKey][exprKey]) {
+					evaluatedExpr = evaluatedExpr.replace(`:${exprKey}`, req[contextKey][exprKey])
+					break
+				}
 			}
 		}
 
-		throw new UnauthorizedError(400, `Route acl key "${expr}" is not defined`)
+		const exprKeysLeft = evaluatedExpr.match(EXPR_REGEXP)
+
+		if (exprKeysLeft) {
+			throw new UnauthorizedError(400, `Route acl key${exprKeysLeft.length > 1 ? 's' : ''} "${exprKeysLeft.map((exprKeyLeft) => exprKeyLeft.substr(1)).join(', ')}" ${exprKeysLeft.length > 1 ? 'are' : 'is'} not defined`)
+		}
+
+		return evaluatedExpr
 	}
 
 	private async evaluateUserActions(req, roles) {

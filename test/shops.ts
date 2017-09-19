@@ -239,5 +239,12 @@ test('DELETE /shops/0 with admin user => 400', async (t) => {
 	const { res, err } = await del('/shops/0', { headers: { userId: 0 } })
 
 	t.is(err.statusCode, 400)
-	t.is(err.response.body.message, 'Route acl key ":shop" is not defined')
+	t.is(err.response.body.message, 'Route acl key "shop" is not defined')
+})
+
+test('GET /bills with admin user => 400', async (t) => {
+	const { res, err } = await get('/bills', { headers: { userId: 0 } })
+
+	t.is(err.statusCode, 400)
+	t.is(err.response.body.message, 'Route acl keys "shopId, orderId" are not defined')
 })

@@ -12,7 +12,10 @@ router.route('/shops')
 router.route('/shops/:shopId')
 	.get(imperium.can({ action: 'seeShop', shop: ':shopId' }), callback)
 	.put(imperium.can([{ action: 'manageShop', shop: ':shopId' }]), callback)
-	.delete(imperium.can([{ action: 'manageShop', shop: ':shop' }]), callback)
+	.delete(imperium.can([{ action: 'manageShop', shop: ':' }]), callback)
+
+router.route('/bills')
+	.get(imperium.can({ action: 'seeBill', stock: ':shopId/:orderId' }), callback)
 
 // assuming that we can pass query.userId and/or query.shopId
 router.route('/orders')
