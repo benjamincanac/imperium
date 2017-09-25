@@ -3,6 +3,9 @@
   "version": "2.0.0",
   "description": "Imperium is a node.js module to control your user's authorizations (ACL).",
   "main": "lib/index.js",
+  "engines": {
+    "node": ">=7.6.0"
+  },
   "files": [
     "lib"
   ],
