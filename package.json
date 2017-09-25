@@ -1,6 +1,6 @@
 {
   "name": "@terrajs/imperium",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "Imperium is a node.js module to control your user's authorizations (ACL).",
   "main": "lib/index.js",
   "files": [
