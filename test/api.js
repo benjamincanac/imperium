@@ -1,7 +1,7 @@
-import test from 'ava'
-import * as assert from 'assert'
-import { Imperium, ImperiumRole, UnauthorizedError } from '../src'
-import imp from '../src'
+const test = require('ava')
+const assert = require('assert')
+const imp = require('../lib')
+const { Imperium, ImperiumRole, UnauthorizedError } = require('../lib')
 
 test('import imperium from "imperium" -> instanceof Imperium', (t) => {
 	t.true(imp instanceof Imperium)
@@ -13,30 +13,24 @@ test('imperium = new Imperium() => instanceof Imperium', (t) => {
 	t.true(imperium instanceof Imperium)
 })
 
-test('imperium.UnauthorizedError => class UnauthorizedError', (t) => {
-	const imperium = new Imperium()
-
-	t.is(imperium.UnauthorizedError, UnauthorizedError)
-})
-
 test('err = new UnauthorizedError() => valid object', (t) => {
-	const statusCode = 200
 	const message = 'test'
+	const status = 200
 	const context = { role: 'user' }
-	const err = new UnauthorizedError(statusCode, message, context)
+	const err = new UnauthorizedError(message, status, context)
 
 	t.true(err instanceof UnauthorizedError)
-	t.is(err.statusCode, statusCode)
+	t.is(err.status, status)
 	t.is(err.message, message)
 	t.is(err.context, context)
 })
 
 test('err = new UnauthorizedError() without statusCode => valid object with statusCode 500', (t) => {
 	const message = 'test'
-	const err = new UnauthorizedError(undefined, message)
+	const err = new UnauthorizedError(message)
 
 	t.true(err instanceof UnauthorizedError)
-	t.is(err.statusCode, 500)
+	t.is(err.status, 500)
 	t.is(err.message, message)
 })
 

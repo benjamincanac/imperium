@@ -15,8 +15,8 @@ npm install --save @terrajs/imperium
 
 ## Usage
 
-```ts
-import imperium from 'imperium'
+```js
+const imperium = require('imperium')
 ```
 
 ## Roles
@@ -31,7 +31,7 @@ You can for example get your user in MongoDB and return :
 - a `Boolean` (`true` if user has the corresponding role, otherwise `false`)
 - an `Object` to compare with the route actions
 
-```ts
+```js
 imperium.role('admin', async (req) => {
 	return req.session.role === 'admin'
 })
@@ -45,7 +45,7 @@ imperium.role('user', async (req) => {
 
 You can use `imperium.role('...')` as a getter in order to use the `can` and `is` functions.
 
-```ts
+```js
 imperium.role('user')
 	.can('seeUser', { user: '@' })
 	.can('manageUser', { user: '@' }) // '@' means itself
@@ -58,7 +58,7 @@ imperium.role('admin')
 
 You can use Imperium middleware (can / is) in any Express app.
 
-```ts
+```js
 // Use imperium.can(...) to secure the route with actions
 app.get('/users', imperium.can('seeUser'), ...)
 app.get('/users', imperium.can(['seeUser', 'manageUser']), ...) // array acts as an AND

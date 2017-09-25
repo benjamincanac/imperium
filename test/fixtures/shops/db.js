@@ -4,11 +4,11 @@ const users = [
 		role: 'admin' // admin user
 	},
 	{
-		_id: 1, // normal user + shop owner of Shop1 + Shop2,
+		_id: 1, // normal user + shop owner of Shop0 + Shop1
 		shop: ['0', '1']
 	},
 	{
-		_id: 2, // normal user + shop owner of Shop1,
+		_id: 2, // normal user + shop owner of Shop0
 		shop: ['1']
 	},
 	{
@@ -29,4 +29,4 @@ const shops = [
 	}
 ]
 
-export default { users, shops }
+module.exports = { users, shops }

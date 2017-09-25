@@ -2,23 +2,20 @@
   "name": "@terrajs/imperium",
   "version": "1.1.1",
   "description": "Imperium is a node.js module to control your user's authorizations (ACL).",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "main": "lib/index.js",
   "files": [
-    "dist/src"
+    "lib"
   ],
   "nyc": {
     "include": [
-      "dist/src/"
+      "lib/"
     ]
   },
   "scripts": {
-    "build": "rimraf dist/ && tsc",
-    "lint": "tslint src/*.ts",
-    "test": "npm run lint && npm run build && nyc ava --verbose --serial --fail-fast dist/test/ && nyc report --reporter=html",
+    "lint": "eslint 'lib/'",
+    "test": "npm run lint && nyc ava --verbose --serial --fail-fast test/ && nyc report --reporter=html",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "preversion": "npm test",
-    "prepublish": "npm run build"
+    "preversion": "npm test"
   },
   "contributors": [
     {
@@ -46,17 +43,14 @@
     "lodash": "^4.17.4"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.71",
-    "@types/node": "^8.0.19",
-    "ava": "^0.21.0",
+    "ava": "^0.22.0",
     "codecov": "^2.3.0",
-    "express": "^4.15.3",
-    "nyc": "^11.1.0",
-    "request": "^2.81.0",
-    "request-promise-native": "^1.0.4",
-    "rimraf": "^2.6.1",
-    "std-mocks": "^1.0.1",
-    "tslint": "^5.5.0",
-    "typescript": "^2.4.2"
+    "eslint": "^4.7.2",
+    "express": "^4.15.5",
+    "nyc": "^11.2.1",
+    "request": "^2.82.0",
+    "request-promise-native": "^1.0.5",
+    "rimraf": "^2.6.2",
+    "std-mocks": "^1.0.1"
   }
 }

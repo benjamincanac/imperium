@@ -1,18 +1,18 @@
-import test from 'ava'
-
+const test = require('ava')
 // Native modules
-import { join } from 'path'
+const { join } = require('path')
 // NPM modules
-import * as express from 'express'
-import * as rp from 'request-promise-native'
-import * as stdMocks from 'std-mocks'
-import imperium from '../src'
+const express = require('express')
+const rp = require('request-promise-native')
+const stdMocks = require('std-mocks')
+// Imperium instance
+const imperium = require('../lib')
 
 /*
 ** Helpers
 */
-let context: any = {}
-const url = (path: string = '/') => `http://localhost:${context.port}` + join('/', path)
+let context
+const url = (path) => `http://localhost:${context.port}` + join('/', path)
 const wrapLogs = async (apiCall) => {
 	// Store logs output
 	stdMocks.use()
@@ -31,10 +31,10 @@ const wrapLogs = async (apiCall) => {
 	// Return err, res and output
 	return { res, err, stdout, stderr }
 }
-const get = (path, options = {}) => wrapLogs(rp({ method: 'GET', uri: url(path), resolveWithFullResponse: true, json: true, ...options }))
-const post = (path, options = {}) => wrapLogs(rp({ method: 'POST', uri: url(path), resolveWithFullResponse: true, json: true, ...options }))
-const put = (path, options = {}) => wrapLogs(rp({ method: 'PUT', uri: url(path), resolveWithFullResponse: true, json: true, ...options }))
-const del = (path, options = {}) => wrapLogs(rp({ method: 'DELETE', uri: url(path), resolveWithFullResponse: true, json: true, ...options }))
+const get = (path, options) => wrapLogs(rp({ method: 'GET', uri: url(path), resolveWithFullResponse: true, json: true, headers: options.headers }))
+const post = (path, options) => wrapLogs(rp({ method: 'POST', uri: url(path), resolveWithFullResponse: true, json: true, headers: options.headers }))
+const put = (path, options) => wrapLogs(rp({ method: 'PUT', uri: url(path), resolveWithFullResponse: true, json: true, headers: options.headers }))
+const del = (path, options) => wrapLogs(rp({ method: 'DELETE', uri: url(path), resolveWithFullResponse: true, json: true, headers: options.headers }))
 
 /*
 ** Start API
@@ -44,10 +44,10 @@ test.before('Start server', async (t) => {
 	// Require server
 	const port = 4444
 	const app = express()
-	app.use(require('./fixtures/shops/routes').default)
+	app.use(require('./fixtures/shops/routes'))
 	app.use((err, req, res, next) => {
 		if (err instanceof imperium.UnauthorizedError) {
-			res.status(err.statusCode).json({ message: err.message, context: err.context })
+			res.status(err.status).json({ message: err.message, context: err.context })
 		} else {
 			res.status(500).json({ message: err.message })
 		}

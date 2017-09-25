@@ -1,5 +1,5 @@
-import { Router } from 'express'
-import imperium from './imperium'
+const { Router } = require('express')
+const imperium = require('./imperium')
 
 const router = Router()
 
@@ -17,4 +17,4 @@ router.route('/users/:userId')
 	.post(imperium.is('friend'))
 	.delete(imperium.can('manageUser'), callback)
 
-export default router
+module.exports = router

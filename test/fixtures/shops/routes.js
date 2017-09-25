@@ -1,5 +1,5 @@
-import { Router } from 'express'
-import imperium from './imperium'
+const { Router } = require('express')
+const imperium = require('./imperium')
 
 const router = Router()
 
@@ -25,4 +25,4 @@ router.route('/orders')
 		{ action: 'seeOrder', shop: ':shopId', when: (req) => !!req.query.shopId }
 	]), callback)
 
-export default router
+module.exports = router
