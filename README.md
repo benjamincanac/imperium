@@ -16,7 +16,7 @@ npm install --save @terrajs/imperium
 ## Usage
 
 ```js
-const imperium = require('imperium')
+const imperium = require('@terrajs/imperium')
 ```
 
 ## Roles
