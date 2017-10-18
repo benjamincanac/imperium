@@ -1,5 +1,5 @@
 {
-  "name": "@terrajs/imperium",
+  "name": "imperium",
   "version": "2.0.0",
   "description": "Imperium is a node.js module to control your user's authorizations (ACL).",
   "main": "lib/index.js",
@@ -15,7 +15,7 @@
     ]
   },
   "scripts": {
-    "lint": "eslint 'lib/'",
+    "lint": "eslint lib/**",
     "test": "npm run lint && nyc ava --verbose --serial --fail-fast test/ && nyc report --reporter=html",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "preversion": "npm test"
@@ -47,11 +47,11 @@
   },
   "devDependencies": {
     "ava": "^0.22.0",
-    "codecov": "^2.3.0",
-    "eslint": "^4.7.2",
-    "express": "^4.15.5",
+    "codecov": "^2.3.1",
+    "eslint": "^4.9.0",
+    "express": "^4.16.2",
     "nyc": "^11.2.1",
-    "request": "^2.82.0",
+    "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
     "rimraf": "^2.6.2",
     "std-mocks": "^1.0.1"
