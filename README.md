@@ -27,7 +27,7 @@ You can use `imperium.role('...', (req) => {})` as a setter to create a role.
 
 The function (can be `asynchronous` by returning a `Promise`) will be used to determine if your user has the role.
 
-You can for example get your user in MongoDB and return :
+For example, you can get your user in MongoDB and return:
 - a `Boolean` (`true` if user has the corresponding role, otherwise `false`)
 - an `Object` to compare with the route actions
 
@@ -41,9 +41,14 @@ imperium.role('user', async (req) => {
 })
 ```
 
+When returning an `object`, the keys will be used to match against user actions params.
+
 ## Actions
 
-You can use `imperium.role('...')` as a getter in order to use the `can` and `is` functions.
+You can use `imperium.role('...')` as a getter in order to use `can` and `is` functions.
+
+- `can(actionName, [params])`: Define user action with its params to match against
+- `is(roleName, [params])`: Inherit role's actions and overwrite its params
 
 ```js
 imperium.role('user')
@@ -56,20 +61,54 @@ imperium.role('admin')
 
 ## Middleware
 
-You can use Imperium middleware (can / is) in any Express app.
+You can use Imperium middleware (`can` / `is`) in any [Express](https://github.com/expressjs/express) app.
+
+### `can(actions)`
+
+Secure a route by checking user's actions.
+
+`actions` should be an `action` or an `array` of `action`, giving an array will act as and `AND` operator.
+
+An `action` should look like this:
+- `action`: `string`, the user action, defined in the user role
+- `[key]`: `string`, expression to be matched against user's ACL
+
+If you give a `string` as action, it will be transformed to the `action` schema (ex: `'seeUser'` -> `{ action: 'seeUser' }`)
+
+The keys other than `action`, will be interpolated from `req.params`, `req.query` and `req.body`.
+
+
+Example: 
 
 ```js
-// Use imperium.can(...) to secure the route with actions
+// Verify that connected user can see all users
+// By omiting the `user` property, it will be defaulted as `user`: '*'
 app.get('/users', imperium.can('seeUser'), ...)
-app.get('/users', imperium.can(['seeUser', 'manageUser']), ...) // array acts as an AND
 
+// Verify that connected user can see AND manage all users
+app.get('/users', imperium.can(['seeUser', 'manageUser']), ...)
+
+// Only connected user can see itself or admin
+// Ex: /users/23 will check the user ACL to be { user: '23' }
 app.get('/users/:userId', imperium.can({ action: 'seeUser', user: ':userId' }), ...)
 
 app.put('/users/:userId', imperium.can([{ action: 'manageUser', user: ':userId' }]), ...)
+```
 
-// Use imperium.is(...) to secure the route with roles
+### `is(roles)`
+
+Secure a route by checking user's role.
+
+`roles` should be an `string` or an `array` of `string`, giving an array will act as and `OR` operator.
+
+Example:
+
+```js
+// Only an admin will be able to call this route
 app.get('/users', imperium.is('admin', ...))
-app.get('/users', imperium.is(['admin', 'user'], ...)) // array acts as an OR
+
+// Only an admin OR user will be able to call this route
+app.get('/users', imperium.is(['admin', 'user'], ...))
 ```
 
 ## Credits
