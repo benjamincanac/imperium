@@ -1,6 +1,6 @@
 <h1 align="center"><br><img src="https://user-images.githubusercontent.com/904724/28824466-5d8ece32-76c2-11e7-9410-7ef59cbc819c.png" width="400" alt="Imperium"/><br><br></h1>
 
-> Node.js module to control your user's authorizations (ACL).
+> Node.js module to control your user's authorizations (ACL), see a [simple demo](https://imperium.glitch.me).
 
 [![npm version](https://img.shields.io/npm/v/imperium.svg)](https://www.npmjs.com/package/imperium)
 [![Travis](https://img.shields.io/travis/terrajs/imperium/master.svg)](https://travis-ci.org/terrajs/imperium)
