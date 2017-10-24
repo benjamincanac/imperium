@@ -126,8 +126,6 @@ Inspired by the work of [Matthieu Oviedo](https://github.com/ovmjm).
 
 Logo made by [Romane Forgue](https://romaneforgue.com/).
 
-<a href="http://js.org" target="_blank" title="JS.ORG | JavaScript Community"><img src="https://logo.js.org/dark_tiny.png" alt="JS.ORG Logo"/></a>
-
 ## License
 
 MIT
