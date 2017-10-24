@@ -23,13 +23,13 @@ const imperium = require('imperium')
 
 Define the different roles of your applications.
 
-You can use `imperium.role('...', (req) => {})` as a setter to create a role.
+Use `imperium.role('...', (req) => {})` to create a role.
 
-The function (can be `asynchronous` by returning a `Promise`) will be used to determine if your user has the role.
+The function will be used to determine if your user has the role (it can be `asynchronous` by returning a `Promise`).
 
 For example, you can get your user in MongoDB and return:
 - a `Boolean` (`true` if user has the corresponding role, otherwise `false`)
-- an `Object` to compare with the route actions
+- an `Object` to compare against route actions
 
 ```js
 imperium.role('admin', async (req) => {
@@ -41,20 +41,27 @@ imperium.role('user', async (req) => {
 })
 ```
 
-When returning an `object`, the keys will be used to match against user actions params.
+When returning an `object`, the keys will be compared against user actions params.
 
 ## Actions
 
-You can use `imperium.role('...')` as a getter in order to use `can` and `is` functions.
+Use `imperium.role('...')` to get a role, and use `can` or `is` methods to give actions or inheritance from another role.
 
-- `can(actionName, [params])`: Define user action with its params to match against
-- `is(roleName, [params])`: Inherit role's actions and overwrite its params
+### `can(actionName, [params])`
+
+Define a user action with its params to match against.
 
 ```js
 imperium.role('user')
 	.can('seeUser', { user: '@' })
 	.can('manageUser', { user: '@' }) // '@' means itself
+```
 
+### `is(roleName, [params])`
+
+Inherit role's actions and overwrite its params.
+
+```js
 imperium.role('admin')
 	.is('user', { user: '*' }) // '*' means all, so admin can see and manage all users
 ```
@@ -78,7 +85,7 @@ If you give a `string` as action, it will be transformed to the `action` schema 
 The keys other than `action`, will be interpolated from `req.params`, `req.query` and `req.body`.
 
 
-Example: 
+Example:
 
 ```js
 // Verify that connected user can see all users
