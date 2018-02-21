@@ -74,7 +74,7 @@ You can use Imperium middleware (`can` / `is`) in any [Express](https://github.c
 
 Secure a route by checking user's actions.
 
-`actions` should be an `action` or an `array` of `action`, giving an array will act as and `AND` operator.
+`actions` should be an `action` or an `array` of `action`, giving an array will act as an `AND` operator.
 
 An `action` should look like this:
 - `action`: `string`, the user action, defined in the user role
