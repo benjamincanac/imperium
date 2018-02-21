@@ -106,7 +106,7 @@ app.put('/users/:userId', imperium.can([{ action: 'manageUser', user: ':userId' 
 
 Secure a route by checking user's role.
 
-`roles` should be an `string` or an `array` of `string`, giving an array will act as and `OR` operator.
+`roles` should be an `string` or an `array` of `string`, giving an array will act as an `OR` operator.
 
 Example:
 
