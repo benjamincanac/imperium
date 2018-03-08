@@ -46,14 +46,14 @@
     "lodash": "^4.17.4"
   },
   "devDependencies": {
-    "ava": "^0.22.0",
-    "codecov": "^2.3.1",
-    "eslint": "^4.9.0",
-    "express": "^4.16.2",
-    "nyc": "^11.2.1",
-    "request": "^2.83.0",
-    "request-promise-native": "^1.0.5",
-    "rimraf": "^2.6.2",
-    "std-mocks": "^1.0.1"
+    "ava": "0.22.0",
+    "codecov": "2.3.1",
+    "eslint": "4.9.0",
+    "express": "4.16.2",
+    "nyc": "11.2.1",
+    "request": "2.83.0",
+    "request-promise-native": "1.0.5",
+    "rimraf": "2.6.2",
+    "std-mocks": "1.0.1"
   }
 }
