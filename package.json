@@ -52,7 +52,7 @@
     "eslint": "4.18.2",
     "express": "4.16.2",
     "nyc": "11.4.1",
-    "request": "2.83.0",
+    "request": "2.84.0",
     "request-promise-native": "1.0.5",
     "rimraf": "2.6.2",
     "std-mocks": "1.0.1"
