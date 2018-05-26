@@ -112,10 +112,10 @@ Example:
 
 ```js
 // Only an admin will be able to call this route
-app.get('/users', imperium.is('admin', ...))
+app.get('/users', imperium.is('admin'), ...)
 
 // Only an admin OR user will be able to call this route
-app.get('/users', imperium.is(['admin', 'user'], ...))
+app.get('/users', imperium.is(['admin', 'user']), ...)
 ```
 
 ## Credits
