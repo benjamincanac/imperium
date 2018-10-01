@@ -13,3 +13,5 @@ You need [Node.js](https://nodejs.org/) 8.0 or greater since it uses native `asy
 ```bash
 npm install --save imperium
 ```
+
+That's all you need to do to use Imperium. You can now learn how to define your acls [here](/docs/master/defining-authorizations).

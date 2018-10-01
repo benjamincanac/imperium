@@ -18,24 +18,18 @@ Follow instructions that are displayed ([or read them here](https://github.com/c
 
 ## Defining your authorization
 
-Authorization must be defined inside the `start/acl.js` file. This file will be loaded only once when the server is launch.
+Authorization must be defined inside the `start/acl.js` file. This file will be loaded only once when the server is launched.
 
 ### Roles
 
-Define the different roles of your applications.
+The documentation is available [here](/docs/master/defining-authorizations#roles).
 
-Use `Imperium.role('...', (ctx) => {})` to create a role.
-
-The function will be used to determine if your user has the role (it can be `asynchronous` by returning a `Promise`).
-
-For example, you can get your user from your database and return:
-
-- a `Boolean` (`true` if user has the corresponding role, otherwise `false`)
-- an `Object` to compare against route actions
-- an `Array` of objects
+Example:
 
 ```js
 const Imperium = use('Imperium')
+
+const Post = use('App/Models/Post')
 
 Imperium.role('Admin', ({ auth }) => {
   return auth.user.role === 'admin'
@@ -54,33 +48,24 @@ Imperium.role('User', async ({ auth }) => {
 })
 ```
 
-When returning an `object`, the keys will be compared against user actions params.
-
 ### Actions
 
-Use `imperium.role('...')` to get a role, and use `can` or `is` methods to give actions or inheritance from another role.
+The documentation is available [here](/docs/master/defining-authorizations#actions).
 
-### `can(actionName, [params])`
-
-Define a user action with its params to match against.
+Example:
 
 ```js
 Imperium.role('User')
-  .can('updateUser', { user: '@' })
-```
+  .can('seeUser', { user: '@' })
 
-### `is(roleName, [params])`
-
-Inherit role's actions and overwrite its params.
-
-```js
 Imperium.role('Admin')
-  .is('User', { user: '*' }) // '*' means all, so admin can see and manage all users
+  .is('User', { user: '*' })
 ```
 
-## Usage
+## Protecting your routes
 
-Adonis Imperium automaticaly share an instance of the `imperium` instance in the context of each request.
+Adonis Imperium automaticaly share an `imperium` instance in the context of each request with the `ImperiumInit` middleware.
+
 To validate the authorization of a user you simply need to extract it from the context.
 
 ```js
@@ -93,8 +78,6 @@ async show ({ imperium, params }) {
   if (!can) {
     // abort 401
   }
-
-  // ...
 }
 ```
 
@@ -108,8 +91,6 @@ async authorize () {
   if (!can) {
     // abort 401
   }
-
-  // ...
 }
 ```
 
@@ -118,14 +99,14 @@ async authorize () {
 You can also use the middlewares `is` and `can` in your routes.
 
 ```js
-Route.get('/posts', 'PostController.index')
-  .middleware(['auth', 'is:Admin'])
-
 Route.put('/posts/:id', 'PostController.update')
   .middleware(['auth', 'can:updatePost'])
+
+Route.delete('/posts/:id', 'PostController.destroy')
+  .middleware(['auth', 'is:Admin'])
 ```
 
-You can also use AdonisJs resources:
+You can also use Adonis resources:
 
 ```js
 Route.resource('posts', 'PostController')
@@ -134,7 +115,7 @@ Route.resource('posts', 'PostController')
     [['store', 'update', 'destroy'], ['auth']],
     [['store'], ['can:storePost']],
     [['update'], ['can:updatePost']],
-    [['destroy'], ['can:destroyPost']]
+    [['destroy'], ['is:Admin']]
   ]))
   .validator(new Map([
     [['store'], ['StorePost']],
