@@ -3,9 +3,9 @@
 > Node.js module to control your user's authorizations (ACL)
 
 [![npm version](https://img.shields.io/npm/v/imperium.svg)](https://www.npmjs.com/package/imperium)
-[![Travis](https://img.shields.io/travis/terrajs/imperium/master.svg)](https://travis-ci.org/terrajs/imperium)
-[![Coverage](https://img.shields.io/codecov/c/github/terrajs/imperium/master.svg)](https://codecov.io/gh/terrajs/imperium)
-[![license](https://img.shields.io/github/license/terrajs/imperium.svg)](https://github.com/terrajs/imperium/blob/master/LICENSE.md)
+[![Travis](https://img.shields.io/travis/cmty/imperium/master.svg)](https://travis-ci.org/cmty/imperium)
+[![Coverage](https://img.shields.io/codecov/c/github/cmty/imperium/master.svg)](https://codecov.io/gh/cmty/imperium)
+[![license](https://img.shields.io/github/license/cmty/imperium.svg)](https://github.com/cmty/imperium/blob/master/LICENSE.md)
 
 ## Installation
 
