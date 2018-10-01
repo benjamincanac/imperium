@@ -11,7 +11,7 @@
 
 [http://imperium.dimerapp.com](http://imperium.dimerapp.com)
 
-## Installation
+## Getting Started
 
 ```bash
 npm install --save imperium
