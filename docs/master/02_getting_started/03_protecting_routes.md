@@ -20,7 +20,7 @@ function (req, res, next) {
 }
 ```
 
-The context passed to the door, in our example `req`, will be used to process the role fonctions defined earlier.
+The context passed to the door, in our example `req`, will be used to process the role functions defined earlier.
 
 Once your door is created you can use the `can` and `is` methods to validate your route:
 
