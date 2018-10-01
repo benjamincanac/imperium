@@ -1,6 +1,6 @@
 {
   "name": "imperium",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "description": "Imperium is a node.js module to control your user's authorizations (ACL).",
   "main": "src/index.js",
   "files": [
