@@ -140,12 +140,3 @@ module.exports = {
   }
 }
 ```
-
-### API
-
-```js
-imperium.can('Action', resource)
-imperium.cannot('Action', resource)
-imperium.is('Role')
-imperium.isnot('Role')
-```
