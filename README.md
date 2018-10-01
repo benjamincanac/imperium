@@ -17,7 +17,7 @@
 npm install --save imperium
 ```
 
-Learn more in the [docs](http://imperium.dimerapp.com).
+Learn more in the [docs](http://imperium.dimerapp.com/docs/master/installation).
 
 ## License
 
