@@ -7,14 +7,18 @@
 [![Coverage](https://img.shields.io/codecov/c/github/cmty/imperium/master.svg)](https://codecov.io/gh/cmty/imperium)
 [![license](https://img.shields.io/github/license/cmty/imperium.svg)](https://github.com/cmty/imperium/blob/master/LICENSE.md)
 
+## Documentation
+
+[http://imperium.dimerapp.com](http://imperium.dimerapp.com)
+
 ## Installation
 
 ```bash
 npm install --save imperium
 ```
 
-## Usage
+Learn more in the [docs](http://imperium.dimerapp.com).
 
-```js
-const imperium = require('imperium')
-```
+## License
+
+[MIT](https://github.com/cmty/imperium/blob/master/LICENSE.md)
