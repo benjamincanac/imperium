@@ -4,10 +4,16 @@ category: Introduction
 title: What is Imperium?
 ---
 
-Imperium is a role-based user's authorizations (ACL) library for Node.js.
+Imperium is a role-based authorizations library for Node.js.
 
 ## Introduction
 
-Almost every Node.js REST API needs to control what users can do. This library can help developers to build complex APIs in seconds. It doesn't depend on any framework and it doesn't depend on any database.
+Node.js REST APIs often need to control what users can do. Imperium help developers to build complex role-based APIs in seconds.
 
-Whether or not you use a framework or a db, it is built to work with every Node.js application.
+[note]
+  Imperium doesn't depend on any framework or database, so you can plug it in any existing Node.js application.
+[/note]
+
+## Code
+
+Checkout our [GitHub](https://github.com/cmty/imperium) to see Imperium source code.

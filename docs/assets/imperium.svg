@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="805px" height="427px" viewBox="0 0 805 427" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>imperium</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="imperium" transform="translate(-98.000000, -93.000000)">
+            <rect id="Rectangle" x="0" y="0" width="1000" height="618"></rect>
+            <text id="IMPERIUM" font-family="MyanmarMN, Myanmar MN" font-size="100" font-weight="normal" fill="#222222">
+                <tspan x="257" y="518">IMPERIUM</tspan>
+            </text>
+            <g id="eagle" transform="translate(103.000000, 98.000000)" stroke="#000000" stroke-linecap="round" stroke-width="11">
+                <polyline id="Shape" points="0.646316647 0.992431138 268.267554 125.343377 397.730046 243.941892 529.772168 122.183473 793.676503 1.77427545"></polyline>
+                <path d="M442.407617,202.757988 L729.850611,71.0320958" id="Shape"></path>
+                <path d="M352.988244,202.757988 L65.5452503,71.0320958" id="Shape"></path>
+                <polyline id="Shape" points="353.422616 250.286802 397.331243 290.121485 441.35176 250.286802"></polyline>
+                <polyline id="Shape" points="431.996297 135.763257 461.475497 135.685653 397.537662 193.627018 332.353749 136.138347 362.738381 136.215952"></polyline>
+                <polyline id="Shape" points="371.283032 167.372311 397.085016 143.833725 424.356824 168.277653"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>

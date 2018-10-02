@@ -8,8 +8,8 @@
   "theme": "default",
   "themeSettings": {
     "headerBg": "#FFFFFF",
-    "logoUrl": "./docs/master/logo.svg",
-    "favUrl": "./docs/master/favicon.png",
+    "logoUrl": "./docs/assets/logo.svg",
+    "favUrl": "./docs/assets/favicon.png",
     "navbar": {
       "Community": {
         "Github": "https://github.com/cmty/imperium"
