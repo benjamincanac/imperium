@@ -1,6 +1,6 @@
 {
   "name": "imperium",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "Imperium is a role-based user's authorizations (ACL) library for Node.js.",
   "main": "src/index.js",
   "files": [
