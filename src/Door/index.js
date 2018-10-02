@@ -58,14 +58,20 @@ class ImperiumDoor {
    *
    * @return {boolean}
    */
-  async is (name) {
+  async is (name, params = {}) {
     const role = this.imperium._roles[name]
     /* istanbul ignore if */
     if (!role) return false
 
     const processedRole = await role.process(this.ctx)
+    if (!processedRole) return false
+    if (typeof processedRole === 'boolean') return processedRole
 
-    return !!processedRole
+    const processedRoles = Array.isArray(processedRole) ? processedRole : [processedRole]
+
+    return some(processedRoles, (processedRoleParams) => {
+      return this._matchActions(processedRoleParams, params)
+    })
   }
 
   /**
@@ -93,6 +99,7 @@ class ImperiumDoor {
   async _roleMatchRouteAction (role, routeAction) {
     const processedRole = await role.process(this.ctx)
     if (!processedRole) return false
+    if (typeof processedRole === 'boolean') return processedRole
 
     const processedRoles = Array.isArray(processedRole) ? processedRole : [processedRole]
 

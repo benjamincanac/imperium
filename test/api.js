@@ -129,7 +129,7 @@ test('imperium.roles() function => array of roles', (t) => {
   }])
 })
 
-test('imperium.door().is(...) with invalid role => false', async (t) => {
+test('imperium.door().is(...) with invalid role as boolean => false', async (t) => {
   const imperium = new Imperium()
 
   const door = imperium.door()
@@ -138,7 +138,7 @@ test('imperium.door().is(...) with invalid role => false', async (t) => {
   t.false(is)
 })
 
-test('imperium.door().is(...) with valid role => true', async (t) => {
+test('imperium.door().is(...) with valid role as boolean => true', async (t) => {
   const imperium = new Imperium()
 
   imperium.role('admin', () => true)
@@ -147,6 +147,116 @@ test('imperium.door().is(...) with valid role => true', async (t) => {
   const is = await door.is('admin')
 
   t.true(is)
+})
+
+test('imperium.door().is(...) with invalid role as boolean => false', async (t) => {
+  const imperium = new Imperium()
+
+  imperium.role('admin', () => false)
+
+  const door = imperium.door()
+  const is = await door.is('admin')
+
+  t.false(is)
+})
+
+test('imperium.door().is(..., ...) with invalid role as object => false', async (t) => {
+  const imperium = new Imperium()
+
+  imperium.role('author', () => ({ post: 1 }))
+
+  const door = imperium.door()
+  const is = await door.is('author', { post: 2 })
+
+  t.false(is)
+})
+
+test('imperium.door().is(..., ...) with valid role as object => true', async (t) => {
+  const imperium = new Imperium()
+
+  imperium.role('author', () => ({ post: 1 }))
+
+  const door = imperium.door()
+  const is = await door.is('author', { post: 1 })
+
+  t.true(is)
+})
+
+test('imperium.door().is(..., ...) as object without params => false', async (t) => {
+  const imperium = new Imperium()
+
+  imperium.role('author', () => ({ post: 1 }))
+
+  const door = imperium.door()
+  const is = await door.is('author')
+
+  t.false(is)
+})
+
+test('imperium.door().is(..., ...) with valid role as object with array => true', async (t) => {
+  const imperium = new Imperium()
+
+  imperium.role('author', () => ({ post: [1, 2] }))
+
+  const door = imperium.door()
+  const is = await door.is('author', { post: 2 })
+
+  t.true(is)
+})
+
+test('imperium.door().is(..., ...) with invalid role as object with array => false', async (t) => {
+  const imperium = new Imperium()
+
+  imperium.role('author', () => ({ post: [1, 2] }))
+
+  const door = imperium.door()
+  const is = await door.is('author', { post: 3 })
+
+  t.false(is)
+})
+
+test('imperium.door().is(..., ...) as object with array without params => false', async (t) => {
+  const imperium = new Imperium()
+
+  imperium.role('author', () => ({ post: [1, 2] }))
+
+  const door = imperium.door()
+  const is = await door.is('author')
+
+  t.false(is)
+})
+
+test('imperium.door().is(..., ...) with valid role as array => true', async (t) => {
+  const imperium = new Imperium()
+
+  imperium.role('author', () => ([{ post: 1 }, { post: 2 }]))
+
+  const door = imperium.door()
+  const is = await door.is('author', { post: 1 })
+
+  t.true(is)
+})
+
+test('imperium.door().is(..., ...) with invalid role as array => false', async (t) => {
+  const imperium = new Imperium()
+
+  imperium.role('author', () => ([{ post: 1 }]))
+
+  const door = imperium.door()
+  const is = await door.is('author', { post: 2 })
+
+  t.false(is)
+})
+
+test('imperium.door().is(..., ...) as array without params => false', async (t) => {
+  const imperium = new Imperium()
+
+  imperium.role('author', () => ([{ post: 1 }]))
+
+  const door = imperium.door()
+  const is = await door.is('author')
+
+  t.false(is)
 })
 
 test('imperium.door().isnot(...) with valid role => true', async (t) => {
