@@ -40,7 +40,7 @@ class ImperiumDoor {
   }
 
   /**
-   * Inverse of `can` method (code must always be affirmative)
+   * Inverse of `can` method (code should always be affirmative)
    *
    * @param name Name of the action
    * @param params Params of the action
@@ -75,14 +75,15 @@ class ImperiumDoor {
   }
 
   /**
-   * Inverse of `is` method (code must always be affirmative)
+   * Inverse of `is` method (code should always be affirmative)
    *
    * @param name Name of the role
+   * @param params Params of the action
    *
    * @return {boolean}
    */
-  async isnot (name) {
-    return !(await this.is(name))
+  async isnot (name, params) {
+    return !(await this.is(name, params))
   }
 
   /**
