@@ -66,4 +66,4 @@ imperium.role('admin')
   .is('user', { user: '*' }) // '*' means all, so admin can see and manage all users
 ```
 
-Once your ACLs are defined, you can learn how to protect your routes [here](/docs/master/protecting-routes).
+Once your ACLs are defined, you can learn how to protect your routes [here](03_protecting_routes.md).
